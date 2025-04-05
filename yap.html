@@ -461,33 +461,6 @@
             margin-bottom: 2rem;
         }
 
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .feature-card {
-            background-color: var(--card-background);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            box-shadow: var(--box-shadow);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            text-align: center;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .feature-icon {
-            font-size: 3rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
-
         .cta-button {
             display: inline-block;
             background: var(--gradient-bg);
@@ -562,62 +535,6 @@
 
         .social-links a:hover {
             color: var(--secondary-color);
-        }
-
-        .contact-form {
-            background-color: var(--card-background);
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            box-shadow: var(--box-shadow);
-            margin-top: 2rem;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #e2e8f0;
-            border-radius: var(--border-radius);
-            font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
-            transition: border-color 0.2s ease;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
-
-        .form-button {
-            background: var(--gradient-bg);
-            color: white;
-            padding: 0.8rem 2rem;
-            border: none;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .form-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         /* Search results */
@@ -812,26 +729,6 @@
                     <a href="#" class="cta-button" id="get-started-btn">Get Started</a>
                 </div>
                 
-                <div class="feature-grid">
-                    <div class="feature-card">
-                        <i class="fas fa-bolt feature-icon"></i>
-                        <h3>Easy to Learn</h3>
-                        <p>YAP features a clean syntax that's easy to understand, making it perfect for beginners.</p>
-                    </div>
-                    
-                    <div class="feature-card">
-                        <i class="fas fa-layer-group feature-icon"></i>
-                        <h3>Type Safety</h3>
-                        <p>Static typing helps catch errors early while keeping your code robust and maintainable.</p>
-                    </div>
-                    
-                    <div class="feature-card">
-                        <i class="fas fa-code feature-icon"></i>
-                        <h3>Modern Features</h3>
-                        <p>Enjoy powerful features like functions, arrays, stacks, queues, and more.</p>
-                    </div>
-                </div>
-
                 <section class="section">
                     <h2>Key Features</h2>
                     <ul>
@@ -1345,53 +1242,36 @@ q.first() - return the first element</code></pre>
                             <h3>GitHub Repository</h3>
                             <p>Check out our open source code and contribute to the project:</p>
                             <div class="social-links">
-                                <a href="https://github.com/yourusername/yap" target="_blank"><i class="fab fa-github"></i> View on GitHub</a>
+                                <a href="https://github.com/NeerjaKasture/Compilers-Project/tree/stable-version" target="_blank"><i class="fab fa-github"></i> View on GitHub</a>
                             </div>
                         </div>
                         
                         <div class="team-card">
-                            <h3>Social Media</h3>
-                            <p>Follow us for updates and announcements:</p>
-                            <div class="social-links">
-                                <a href="#"><i class="fab fa-twitter"></i> Twitter</a>
-                                <a href="#"><i class="fab fa-discord"></i> Discord</a>
+                            <h3>Contact Us</h3>
+                            <p>Have questions or suggestions? Feel free to reach out to our team:</p>
+                            <div class="social-links" style="flex-direction: column; align-items: flex-start; gap: 0.5rem;">
+                                <a href="mailto:srijahanvi.chinthalapudi@iitgn.ac.in" style="font-size: 0.9rem; display: flex; align-items: center;">
+                                    <i class="fas fa-envelope" style="margin-right: 8px;"></i>
+                                    <span>srijahanvi.chinthalapudi@iitgn.ac.in</span>
+                                </a>
+                                <a href="mailto:gangannagudem.siri@iitgn.ac.in" style="font-size: 0.9rem; display: flex; align-items: center;">
+                                    <i class="fas fa-envelope" style="margin-right: 8px;"></i>
+                                    <span>gangannagudem.siri@iitgn.ac.in</span>
+                                </a>
+                                <a href="mailto:saloni.shinde@iitgn.ac.in" style="font-size: 0.9rem; display: flex; align-items: center;">
+                                    <i class="fas fa-envelope" style="margin-right: 8px;"></i>
+                                    <span>saloni.shinde@iitgn.ac.in</span>
+                                </a>
+                                <a href="mailto:neerja.kasture@iitgn.ac.in" style="font-size: 0.9rem; display: flex; align-items: center;">
+                                    <i class="fas fa-envelope" style="margin-right: 8px;"></i>
+                                    <span>neerja.kasture@iitgn.ac.in</span>
+                                </a>
+                                <a href="mailto:anura.mantri@iitgn.ac.in" style="font-size: 0.9rem; display: flex; align-items: center;">
+                                    <i class="fas fa-envelope" style="margin-right: 8px;"></i>
+                                    <span>anura.mantri@iitgn.ac.in</span>
+                                </a>
                             </div>
                         </div>
-                    </div>
-                </section>
-                
-                <section class="section">
-                    <h2>Contact Us</h2>
-                    <p>Have questions, suggestions, or feedback? We'd love to hear from you!</p>
-                    
-                    <div class="contact-form">
-                        <form id="contact-form">
-                            <div class="form-group">
-                                <label for="name">Name</label>
-                                <input type="text" id="name" name="name" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="email" id="email" name="email" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="subject">Subject</label>
-                                <input type="text" id="subject" name="subject" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="message">Message</label>
-                                <textarea id="message" name="message" rows="4" required></textarea>
-                            </div>
-                            
-                            <button type="submit" class="form-button">Send Message</button>
-                        </form>
-                    </div>
-                    
-                    <div class="note" style="margin-top: 2rem;">
-                        <p>For direct inquiries, you can also email us at: <strong>contact@yaplanguage.org</strong></p>
                     </div>
                 </section>
             </section>
