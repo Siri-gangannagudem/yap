@@ -1,0 +1,1699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YAP Programming Language Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* Updated color scheme */
+            --primary-color: #6c63ff;
+            --secondary-color: #4b45b2;
+            --accent-color: #ff6b6b;
+            --background-color: #f8f9fa;
+            --card-background: #ffffff;
+            --text-color: #2d3748;
+            --text-light: #718096;
+            --code-bg: #f0f4f8;
+            --code-text: #3182ce;
+            --sidebar-width: 280px;
+            --header-height: 70px;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            --gradient-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+        
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            background: var(--gradient-bg);
+            color: white;
+            box-shadow: var(--box-shadow);
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+        }
+        
+        .logo {
+            height: 45px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+            border-radius: 50%;
+            background-color: white;
+            padding: 3px;
+        }
+        
+        .title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+            line-height: 1.2;
+            letter-spacing: 0.5px;
+        }
+
+        /* Navigation Menu */
+        .nav-menu {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 0 1.2rem;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .nav-menu a:hover {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .nav-menu a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 3px;
+            background-color: white;
+            border-radius: 2px;
+        }
+
+        /* Search */
+        .search-container {
+            position: relative;
+            margin-right: 1rem;
+        }
+
+        .search-input {
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            border-radius: 20px;
+            border: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            width: 200px;
+            transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-input:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.3);
+            width: 220px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .container {
+            display: flex;
+            margin-top: var(--header-height);
+            min-height: calc(100vh - var(--header-height));
+        }
+        
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--card-background);
+            border-right: 1px solid #e2e8f0;
+            position: fixed;
+            top: var(--header-height);
+            bottom: 0;
+            overflow-y: auto;
+            padding: 2rem 0;
+            box-shadow: inset -2px 0 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .sidebar nav ul {
+            list-style-type: none;
+        }
+        
+        .sidebar nav li {
+            margin-bottom: 0.25rem;
+        }
+        
+        .sidebar nav .section-title {
+            font-weight: 600;
+            padding: 0.5rem 2rem;
+            color: var(--text-color);
+            cursor: pointer;
+            display: block;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .sidebar nav .section-title:hover {
+            background-color: #f1f5f9;
+            color: var(--primary-color);
+        }
+        
+        .sidebar nav .subsection {
+            padding: 0.35rem 2.5rem;
+            display: block;
+            text-decoration: none;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .sidebar nav a:hover {
+            background-color: #f1f5f9;
+            color: var(--primary-color);
+        }
+        
+        .sidebar nav a.active {
+            background-color: #e0e7ff;
+            color: var(--primary-color);
+            font-weight: 500;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .sidebar nav .subsections {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .sidebar nav .subsections.show {
+            max-height: 200px;
+        }
+        
+        .sidebar nav .section-title.has-subsections {
+            position: relative;
+        }
+        
+        .sidebar nav .section-title.has-subsections::after {
+            content: "+";
+            position: absolute;
+            right: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .sidebar nav .section-title.has-subsections.active::after {
+            transform: rotate(45deg);
+        }
+        
+        main {
+            margin-left: var(--sidebar-width);
+            padding: 2rem 3rem;
+            width: calc(100% - var(--sidebar-width));
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        h1::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            width: 60px;
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+            color: var(--secondary-color);
+            position: relative;
+        }
+        
+        h2::before {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            height: 2px;
+            width: 40px;
+            background: var(--primary-color);
+        }
+        
+        h3 {
+            font-size: 1.4rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+        
+        h4 {
+            font-size: 1.2rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.8rem;
+            color: var(--text-color);
+            font-weight: 600;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-color);
+            line-height: 1.7;
+        }
+        
+        ul, ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        code {
+            font-family: 'Fira Code', monospace;
+            background-color: var(--code-bg);
+            color: var(--code-text);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background-color: var(--code-bg);
+            padding: 1.2rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+            box-shadow: var(--box-shadow);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            color: inherit;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+        }
+        
+        th, td {
+            padding: 0.75rem 1.25rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        
+        tr:hover {
+            background-color: #edf2f7;
+        }
+        
+        .output {
+            background-color: #2d3748;
+            color: #f8fafc;
+            padding: 1.2rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1.5rem;
+            font-family: 'Fira Code', monospace;
+            box-shadow: var(--box-shadow);
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .section {
+            margin-bottom: 4rem;
+            scroll-margin-top: 2rem;
+            background-color: var(--card-background);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        
+        .note {
+            background-color: #ebf8ff;
+            border-left: 4px solid #3182ce;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+
+        .tip {
+            background-color: #e6fffa;
+            border-left: 4px solid #38b2ac;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+
+        .warning {
+            background-color: #fffaf0;
+            border-left: 4px solid #dd6b20;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+
+        /* Badges for section numbers */
+        .section-badge {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+            font-weight: 600;
+        }
+
+        /* Home page styling */
+        .home-hero {
+            text-align: center;
+            padding: 3rem 1rem;
+            max-width: 900px;
+            margin: 0 auto 3rem auto;
+        }
+
+        .home-hero img {
+            width: 180px;
+            height: 180px;
+            margin-bottom: 2rem;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+            border-radius: 50%;
+            background-color: white;
+            padding: 10px;
+        }
+
+        .home-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+        }
+
+        .home-hero h1::after {
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+        }
+
+        .home-tagline {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 2rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background-color: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--gradient-bg);
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: var(--box-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-top: 2rem;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* About page */
+        .team-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 3rem;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .team-card {
+            flex: 1;
+            min-width: 250px;
+            background-color: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            text-align: center;
+        }
+
+        .team-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+        }
+
+        .team-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .team-role {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            transition: color 0.2s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        .contact-form {
+            background-color: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--box-shadow);
+            margin-top: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .form-button {
+            background: var(--gradient-bg);
+            color: white;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Search results */
+        .search-results {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 300px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            z-index: 200;
+            margin-top: 0.5rem;
+        }
+
+        .search-results.show {
+            display: block;
+        }
+
+        .search-results-item {
+            padding: 0.8rem 1.2rem;
+            border-bottom: 1px solid #e2e8f0;
+            cursor: pointer;
+        }
+
+        .search-results-item:hover {
+            background-color: #f1f5f9;
+        }
+
+        .search-results-item strong {
+            display: block;
+            color: var(--primary-color);
+            margin-bottom: 0.2rem;
+        }
+
+        .search-results-item span {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .search-results-empty {
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .content-section.active:not(#documentation-section) {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Adjust main container when sidebar is hidden */
+        main.full-width {
+            margin-left: 0;
+            width: 100%;
+            padding: 2rem 3rem;
+        }
+
+        /* Add special styling for home page and about us sections */
+        #home-section .section,
+        #about-section .section {
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                z-index: 99;
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            main {
+                margin-left: 0;
+                width: 100%;
+                padding: 1.5rem;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+
+            header {
+                flex-direction: column;
+                height: auto;
+                padding: 1rem;
+            }
+
+            .logo-container {
+                margin-bottom: 1rem;
+            }
+
+            .nav-menu {
+                width: 100%;
+                justify-content: space-around;
+            }
+
+            .search-container {
+                margin: 1rem 0;
+                width: 100%;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="yap.jpg" alt="YAP Logo" class="logo">
+            <h1 class="title">YAP Programming Language</h1>
+        </div>
+        
+        <div class="nav-menu">
+            <a href="#" class="nav-link active" data-section="home">Home</a>
+            <a href="#" class="nav-link" data-section="documentation">Documentation</a>
+            <a href="#" class="nav-link" data-section="about">About Us</a>
+        </div>
+        
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search documentation...">
+            <div class="search-results"></div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <aside class="sidebar">
+            <nav>
+                <ul>
+                    <li><a href="#intro" class="section-title">Introduction</a></li>
+                    <li><a href="#variables" class="section-title">1. Variables and Data Types</a></li>
+                    <li><a href="#printing" class="section-title">2. Printing Output</a></li>
+                    <li><a href="#input" class="section-title">3. Taking User Input</a></li>
+                    <li>
+                        <a href="#operations" class="section-title has-subsections">4. Operations</a>
+                        <div class="subsections">
+                            <a href="#arithmetic" class="subsection">4.1 Arithmetic Operations</a>
+                            <a href="#comparison" class="subsection">4.2 Comparison Operations</a>
+                            <a href="#logical" class="subsection">4.3 Logical Operations</a>
+                            <a href="#bitwise" class="subsection">4.4 Bitwise Operations</a>
+                        </div>
+                    </li>
+                    <li><a href="#conditionals" class="section-title">5. Conditional Statements</a></li>
+                    <li>
+                        <a href="#loops" class="section-title has-subsections">6. Loops</a>
+                        <div class="subsections">
+                            <a href="#while" class="subsection">6.1 While Loop</a>
+                            <a href="#for" class="subsection">6.2 For Loop</a>
+                            <a href="#break" class="subsection">6.3 Break and Continue</a>
+                        </div>
+                    </li>
+                    <li><a href="#arrays" class="section-title">7. Arrays</a></li>
+                    <li><a href="#functions" class="section-title">8. Functions</a></li>
+                    <li>
+                        <a href="#collections" class="section-title has-subsections">9. Stacks and Queues</a>
+                        <div class="subsections">
+                            <a href="#stacks" class="subsection">9.1 Stacks</a>
+                            <a href="#queues" class="subsection">9.2 Queues</a>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <main>
+            <!-- Home Section -->
+            <section id="home-section" class="content-section active">
+                <div class="home-hero">
+                    <img src="yap.jpg" alt="YAP Logo" class="logo">
+                    <h1>YAP Programming Language</h1>
+                    <p class="home-tagline">A modern, intuitive language designed for simplicity and power</p>
+                    <a href="#" class="cta-button" id="get-started-btn">Get Started</a>
+                </div>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-bolt feature-icon"></i>
+                        <h3>Easy to Learn</h3>
+                        <p>YAP features a clean syntax that's easy to understand, making it perfect for beginners.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <i class="fas fa-layer-group feature-icon"></i>
+                        <h3>Type Safety</h3>
+                        <p>Static typing helps catch errors early while keeping your code robust and maintainable.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <i class="fas fa-code feature-icon"></i>
+                        <h3>Modern Features</h3>
+                        <p>Enjoy powerful features like functions, arrays, stacks, queues, and more.</p>
+                    </div>
+                </div>
+
+                <section class="section">
+                    <h2>Key Features</h2>
+                    <ul>
+                        <li><strong>Simple Syntax:</strong> YAP's syntax is designed to be readable and intuitive.</li>
+                        <li><strong>Static Typing:</strong> Variables are statically typed for better code safety.</li>
+                        <li><strong>Boolean Values:</strong> Uses <code>nocap</code> (true) and <code>cap</code> (false) for boolean values.</li>
+                        <li><strong>Function Returns:</strong> Uses the keyword <code>yeet</code> for returning values from functions.</li>
+                        <li><strong>Built-in Data Structures:</strong> Support for arrays, stacks, and queues.</li>
+                        <li><strong>I/O Operations:</strong> <code>yap()</code> for output and <code>spill()</code> for input.</li>
+                    </ul>
+                </section>
+
+                <section class="section">
+                    <h2>Getting Started</h2>
+                    <p>Ready to start coding in YAP? Check out our comprehensive documentation to learn the basics:</p>
+                    <ul>
+                        <li><a href="#variables">Variables and Data Types</a></li>
+                        <li><a href="#printing">Printing Output</a></li>
+                        <li><a href="#input">Taking User Input</a></li>
+                        <li><a href="#operations">Operations</a></li>
+                        <li><a href="#conditionals">Conditional Statements</a></li>
+                        <li><a href="#loops">Loops</a></li>
+                    </ul>
+                </section>
+            </section>
+
+            <!-- Documentation Section -->
+            <section id="documentation-section" class="content-section">
+                <section id="intro" class="section">
+                    <h1>How to Write Code in YAP?</h1>
+                    <p>Welcome to the YAP programming language documentation. YAP is designed to be intuitive yet powerful, with a syntax that's both expressive and easy to learn.</p>
+                </section>
+                
+                <section id="variables" class="section">
+                    <h2><span class="section-badge">1</span>Variables and Data Types</h2>
+                    <p>The datatype of the variable must be defined by the user at the time of declaration. You can declare variables using the following types:</p>
+                    <ul>
+                        <li><code>int</code> - Whole numbers</li>
+                        <li><code>float</code> - Decimal numbers</li>
+                        <li><code>bool</code> - <code>nocap</code> (true) or <code>cap</code> (false)</li>
+                        <li><code>string</code> - Text</li>
+                        <li><code>int[]</code>, <code>float[]</code>, <code>bool[]</code>, <code>string[]</code> - Arrays</li>
+                    </ul>
+                    <h3>Declaring Variables:</h3>
+                    <pre><code>int age = 25;
+float pi = 3.14;
+bool isStudent = nocap;
+string name = "Alice";</code></pre>
+                </section>
+                
+                <section id="printing" class="section">
+                    <h2><span class="section-badge">2</span>Printing Output</h2>
+                    <p>Use <code>yap()</code> to display values.</p>
+                    <h3>Example: Printing</h3>
+                    <pre><code>yap("Hello, world!");
+int x = 10;
+yap(x);</code></pre>
+                    <div class="output">Hello, world!
+10</div>
+                </section>
+                
+                <section id="input" class="section">
+                    <h2><span class="section-badge">3</span>Taking User Input</h2>
+                    <p>Use <code>spill()</code> to get values from the user.</p>
+                    <h3>Example: Input</h3>
+                    <pre><code>int age = spill();
+yap("Your age is: ", age);</code></pre>
+                    <p>If you enter <code>20</code>, output will be:</p>
+                    <div class="output">Your age is: 20</div>
+                </section>
+                
+                <section id="operations" class="section">
+                    <h2><span class="section-badge">4</span>Operations</h2>
+                    
+                    <section id="arithmetic" class="section">
+                        <h3>4.1 Arithmetic Operations</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Operator</th>
+                                    <th>Name</th>
+                                    <th>Example</th>
+                                    <th>Output</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>+</code></td>
+                                    <td>Addition</td>
+                                    <td><code>5+3</code></td>
+                                    <td><code>8</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>-</code></td>
+                                    <td>Subtraction</td>
+                                    <td><code>5-3</code></td>
+                                    <td><code>2</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>*</code></td>
+                                    <td>Multiplication</td>
+                                    <td><code>5*3</code></td>
+                                    <td><code>15</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>/</code></td>
+                                    <td>Division</td>
+                                    <td><code>6/3</code></td>
+                                    <td><code>2.0</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>^</code></td>
+                                    <td>Exponentiation</td>
+                                    <td><code>5^3</code></td>
+                                    <td><code>125</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>~</code></td>
+                                    <td>Unary Negation</td>
+                                    <td><code>~2</code></td>
+                                    <td><code>-2</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>%</code></td>
+                                    <td>Modulo</td>
+                                    <td><code>10%3</code></td>
+                                    <td><code>1</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                    
+                    <section id="comparison" class="section">
+                        <h3>4.2 Comparison Operations</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Operator</th>
+                                    <th>Name</th>
+                                    <th>Example</th>
+                                    <th>Output</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>&lt;</code></td>
+                                    <td>Less than</td>
+                                    <td><code>5&lt;3</code></td>
+                                    <td><code>cap</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>&gt;</code></td>
+                                    <td>Greater than</td>
+                                    <td><code>5&gt;3</code></td>
+                                    <td><code>nocap</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>&lt;=</code></td>
+                                    <td>Less than or equal to</td>
+                                    <td><code>5&lt;=3</code></td>
+                                    <td><code>cap</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>&gt;=</code></td>
+                                    <td>Greater than or equal to</td>
+                                    <td><code>5&gt;=3</code></td>
+                                    <td><code>nocap</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>==</code></td>
+                                    <td>Equal to</td>
+                                    <td><code>5==3</code></td>
+                                    <td><code>cap</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>!=</code></td>
+                                    <td>Not equal to</td>
+                                    <td><code>5!=3</code></td>
+                                    <td><code>nocap</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                    
+                    <section id="logical" class="section">
+                        <h3>4.3 Logical Operations</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Operator</th>
+                                    <th>Name</th>
+                                    <th>Example</th>
+                                    <th>Output</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>and</code></td>
+                                    <td>AND</td>
+                                    <td><code>nocap and cap</code></td>
+                                    <td><code>cap</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>or</code></td>
+                                    <td>OR</td>
+                                    <td><code>nocap or cap</code></td>
+                                    <td><code>nocap</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>not</code></td>
+                                    <td>NOT</td>
+                                    <td><code>not cap</code></td>
+                                    <td><code>nocap</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                    
+                    <section id="bitwise" class="section">
+                        <h3>4.4 Bitwise Operations</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Operator</th>
+                                    <th>Name</th>
+                                    <th>Example</th>
+                                    <th>Binary Calculation</th>
+                                    <th>Output</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>&amp;</code></td>
+                                    <td>AND</td>
+                                    <td><code>5&amp;3</code></td>
+                                    <td><code>101 &amp; 011 = 001</code></td>
+                                    <td><code>1</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>|</code></td>
+                                    <td>OR</td>
+                                    <td><code>5|3</code></td>
+                                    <td><code>101 | 011 = 111</code></td>
+                                    <td><code>7</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>~~</code></td>
+                                    <td>NOT</td>
+                                    <td><code>~~3</code></td>
+                                    <td><code>~011 = 100</code></td>
+                                    <td><code>-4</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                </section>
+                
+                <section id="conditionals" class="section">
+                    <h2><span class="section-badge">5</span>Conditional Statements</h2>
+                    <p>Use <code>if</code>, <code>elif</code>, and <code>else</code> for decision-making.</p>
+                    <h3>Example: If-Else</h3>
+                    <pre><code>int num = spill();
+if (num > 0) {
+    yap("Positive number");
+} elif (num < 0) {
+    yap("Negative number");
+} else {
+    yap("Zero");
+}</code></pre>
+                    <p><strong>Input:</strong> <code>5</code></p>
+                    <div class="output">Positive number</div>
+                    
+                    <h3>Example: Nested If-Else</h3>
+                    <pre><code>int x = 4;
+float y = 7.0;
+bool z = nocap;
+string msg = "hello";
+if (x > 0) {
+    if ((y > 2.0) and (z == nocap)) {
+        yap("Complex nested condition 1");
+        if (msg == "Hello") {
+            yap("Deepest nesting");
+        } else {
+            yap("Deep nest else");
+        }
+    } else {
+        yap("Complex nested condition 2");
+    }
+} else {
+    yap("Outer else");
+}</code></pre>
+                    <div class="output">Complex nested condition 1
+Deep nest else</div>
+                </section>
+                
+                <section id="loops" class="section">
+                    <h2><span class="section-badge">6</span>Loops</h2>
+                    <p>YAP supports several types of loops for repeating code execution.</p>
+                    
+                    <section id="while" class="section">
+                        <h3>6.1 <code>while</code> loop</h3>
+                        <pre><code>int count = 0;
+while (count < 5) {
+    yap(count);
+    count = count + 1;
+}</code></pre>
+                        <div class="output">0
+1
+2
+3
+4</div>
+                    </section>
+                    
+                    <section id="for" class="section">
+                        <h3>6.2 <code>for</code> loop</h3>
+                        <pre><code>for (int i = 0; i < 5; i = i + 1) {
+    yap(i);
+}</code></pre>
+                        <div class="output">0
+1
+2
+3
+4</div>
+                    </section>
+                    
+                    <section id="break" class="section">
+                        <h3>6.3 <code>break</code> and <code>continue</code></h3>
+                        <p>Loop control statements can modify the normal execution flow:</p>
+                        <ul>
+                            <li><code>break</code>: Exits the loop immediately.</li>
+                            <li><code>continue</code>: Skips the current iteration and moves to the next one.</li>
+                        </ul>
+                        <div class="tip">
+                            <p>Using <code>break</code> to exit a loop early:</p>
+                        </div>
+                        <pre><code>for (int i = 0; i < 5; i = i + 1) {
+    yap(i);
+    if (i==2){
+        break;
+    }
+}</code></pre>
+                        <div class="output">0
+1
+2</div>
+                        <div class="tip">
+                            <p>Using <code>continue</code> to skip an iteration:</p>
+                        </div>
+                        <pre><code>for (int i = 0; i < 5; i = i + 1) {
+    if (i==2){
+        continue;
+    }
+    yap(i);
+}</code></pre>
+                        <div class="output">0
+1
+3
+4</div>
+                    </section>
+                </section>
+                
+                <section id="arrays" class="section">
+                    <h2><span class="section-badge">7</span>Arrays</h2>
+                    <p>Arrays can be defined for any of these types: <code>int[]</code>, <code>float[]</code>, <code>bool[]</code>, <code>string[]</code>. Arrays having elements of different datatypes are not supported.</p>
+                    <pre><code>int[] numbers = [1, 2, 3, 4];
+string[] words = ["hello", "world"];</code></pre>
+                    
+                    <h3>Access array elements:</h3>
+                    <pre><code>yap(numbers[2]);</code></pre>
+                    <div class="output">3</div>
+                    
+                    <h3>Modify array elements:</h3>
+                    <pre><code>numbers[1] = 10;
+yap(numbers[1]);</code></pre>
+                    <div class="output">10</div>
+                    
+                    <h3>Appending Elements</h3>
+                    <pre><code>numbers.append(5);
+yap(numbers);</code></pre>
+                    <div class="output">[1, 10, 3, 4, 5]</div>
+                    
+                    <h3>Deleting Elements</h3>
+                    <p>Delete takes the index of the element which is to be deleted:</p>
+                    <pre><code>numbers.delete(1);
+yap(numbers);</code></pre>
+                    <div class="output">[1, 3, 4, 5]</div>
+                    
+                    <h3>Finding length</h3>
+                    <pre><code>yap(numbers.len());</code></pre>
+                    <div class="output">4</div>
+                </section>
+                
+                <section id="functions" class="section">
+                    <h2><span class="section-badge">8</span>Functions</h2>
+                    <p>A function is defined using <code>def</code>, and parameters are statically typed. The data type for return value is to be specified at the time of function definition, else the function is set to void by default. The keyword 'yeet' is used for returning functions. Functions can only return one value currently.</p>
+                    <div class="note">
+                        <p>Note: There are no ';' at the end of 'yeet' statements.</p>
+                        <p>Note: Functions cannot be parsed as parameters to other functions; However, function calls can be parsed.</p>
+                    </div>
+                    
+                    <h3>Function with Parameters</h3>
+                    <pre><code>def add(int a, int b) -> int {
+    yeet a + b
+}
+yap(add(5, 3));</code></pre>
+                    <div class="output">8</div>
+                    
+                    <h3>Function without Return Value</h3>
+                    <pre><code>def greet(string name) {
+    yap("Hello, ", name);
+}
+greet("Alice");</code></pre>
+                    <div class="output">Hello, Alice</div>
+                    
+                    <h3>Function with an Array as Input and Output</h3>
+                    <pre><code>def double_elements(int[] arr) -> int[] {
+    for (int i = 0; i < 4; i = i + 1) {
+        arr[i] = arr[i] * 2;
+    }
+    yeet arr
+}
+int[] numbers = [1, 2, 3, 4];
+int[] result = double_elements(numbers);
+yap("Doubled Array:", result);</code></pre>
+                    <div class="output">Doubled Array:[2, 4, 6, 8]</div>
+                    
+                    <h3>Recursive Function</h3>
+                    <pre><code>def fib(int n) -> int{
+    if((n==1) or (n==0) ){
+        yeet n
+    }
+    int x = fib(n-1) + fib(n-2);
+    yeet x
+}
+yap(fib(8));</code></pre>
+                    <div class="output">21</div>
+                    
+                    <h3>Functions as First-Class Values</h3>
+                    <pre><code>def add(int a, int b) -> int {
+    yeet a + b
+}
+def multiply(int x, int y) -> int {
+    yeet x * y
+}
+yap(multiply(add(2, 3), 4));</code></pre>
+                    <div class="output">20</div>
+                    
+                    <h3>Function and Scoping</h3>
+                    <pre><code>def changeVar(int x) -> int {
+    x = x + 10;
+    yeet x
+}
+int x = 5;
+yap(changeVar(x));  # Expected: 15
+yap(x);</code></pre>
+                    <div class="output">15
+5</div>
+                    
+                    <h4>Explanation: Scoping in YAP</h4>
+                    <p>In YAP, function parameters are passed by value. This means that when you call changeVar(x), the function gets a copy of x, not the original variable. Inside the function, the modification x = x + 10; affects only the copy, not the original x. After the function returns, x remains unchanged outside the function.</p>
+                    <p>To modify a variable globally, you would need to return the new value and explicitly reassign it:</p>
+                    <pre><code>int x = 5;
+x = changeVar(x);
+yap(x);</code></pre>
+                    <div class="output">15</div>
+                </section>
+                
+                <section id="collections" class="section">
+                    <h2><span class="section-badge">9</span>Stacks and Queues</h2>
+                    <p>Stacks and queues can be declared using <code>stack&lt;type&gt;</code> and <code>queue&lt;type&gt;</code>, where <code>type</code> is the datatype.</p>
+                    
+                    <section id="stacks" class="section">
+                        <h3>9.1 Stacks</h3>
+                        <p>A stack follows the <strong>Last In, First Out (LIFO)</strong> principle.</p>
+                        
+                        <h4>Declaring a Stack:</h4>
+                        <pre><code>stack<int> s;</code></pre>
+                        
+                        <h4>Stack operations:</h4>
+                        <pre><code>s.stackPush(3) - pushes 3 into stack
+s.stackPop()-pops the top element
+s.top() - return the top element</code></pre>
+                    </section>
+                    
+                    <section id="queues" class="section">
+                        <h3>9.2 Queues</h3>
+                        <p>A queue follows the <strong>First In, First Out (FIFO)</strong> principle.</p>
+                        
+                        <h4>Declaring a Queue:</h4>
+                        <pre><code>queue<int> q;</code></pre>
+                        
+                        <h4>Queue operations:</h4>
+                        <pre><code>q.queuePush(3) - pushes 3 into queue
+q.queuePop()-pops the first element
+q.first() - return the first element</code></pre>
+                    </section>
+                </section>
+            </section>
+
+            <!-- About Us Section -->
+            <section id="about-section" class="content-section">
+                <section class="section">
+                    <h1>About YAP Language</h1>
+                    <p>YAP is a modern programming language designed for simplicity, readability, and power. Created as an educational project, YAP combines the best features of multiple programming languages to create an experience that's both enjoyable and productive.</p>
+                    
+                    <h2>Our Mission</h2>
+                    <p>Our mission is to create a programming language that's accessible to beginners while still being powerful enough for more complex applications. We believe that learning to code should be fun and intuitive, and YAP was designed with this philosophy in mind.</p>
+                    
+                    <h2>Connect With Us</h2>
+                    <div class="team-section">
+                        <div class="team-card">
+                            <h3>GitHub Repository</h3>
+                            <p>Check out our open source code and contribute to the project:</p>
+                            <div class="social-links">
+                                <a href="https://github.com/yourusername/yap" target="_blank"><i class="fab fa-github"></i> View on GitHub</a>
+                            </div>
+                        </div>
+                        
+                        <div class="team-card">
+                            <h3>Social Media</h3>
+                            <p>Follow us for updates and announcements:</p>
+                            <div class="social-links">
+                                <a href="#"><i class="fab fa-twitter"></i> Twitter</a>
+                                <a href="#"><i class="fab fa-discord"></i> Discord</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="section">
+                    <h2>Contact Us</h2>
+                    <p>Have questions, suggestions, or feedback? We'd love to hear from you!</p>
+                    
+                    <div class="contact-form">
+                        <form id="contact-form">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" id="name" name="name" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="subject">Subject</label>
+                                <input type="text" id="subject" name="subject" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="message">Message</label>
+                                <textarea id="message" name="message" rows="4" required></textarea>
+                            </div>
+                            
+                            <button type="submit" class="form-button">Send Message</button>
+                        </form>
+                    </div>
+                    
+                    <div class="note" style="margin-top: 2rem;">
+                        <p>For direct inquiries, you can also email us at: <strong>contact@yaplanguage.org</strong></p>
+                    </div>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Add active class to current section in sidebar
+        const sections = document.querySelectorAll('.section');
+        const navLinks = document.querySelectorAll('.sidebar nav a');
+        
+        // Navigation menu functionality
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all nav links
+                document.querySelectorAll('.nav-link').forEach(innerLink => {
+                    innerLink.classList.remove('active');
+                });
+                
+                // Add active class to clicked link
+                this.classList.add('active');
+                
+                // Show corresponding section
+                const sectionId = this.getAttribute('data-section');
+                document.querySelectorAll('.content-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.getElementById(sectionId + '-section').classList.add('active');
+                
+                // If documentation is selected, show sidebar and adjust main width
+                const mainElement = document.querySelector('main');
+                if (sectionId === 'documentation') {
+                    document.querySelector('.sidebar').style.display = 'block';
+                    mainElement.classList.remove('full-width');
+                } else {
+                    document.querySelector('.sidebar').style.display = 'none';
+                    mainElement.classList.add('full-width');
+                }
+            });
+        });
+        
+        // Get Started button functionality
+        document.getElementById('get-started-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Switch to documentation section
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === 'documentation') {
+                    link.classList.add('active');
+                }
+            });
+            
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById('documentation-section').classList.add('active');
+            
+            // Show sidebar and adjust main width
+            document.querySelector('.sidebar').style.display = 'block';
+            document.querySelector('main').classList.remove('full-width');
+        });
+        
+        // Highlight the active section in the sidebar as user scrolls
+        window.addEventListener('scroll', () => {
+            if (!document.getElementById('documentation-section').classList.contains('active')) return;
+            
+            let current = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if(pageYOffset >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if(link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                    
+                    // If it's a subsection, show its parent
+                    if (link.classList.contains('subsection')) {
+                        const parent = link.closest('li').querySelector('.section-title');
+                        parent.classList.add('active');
+                        const subsections = link.closest('.subsections');
+                        if (subsections) {
+                            subsections.classList.add('show');
+                        }
+                    }
+                }
+            });
+        });
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                // Only apply smooth scrolling for internal documentation links
+                if (!document.getElementById('documentation-section').classList.contains('active')) {
+                    if (this.getAttribute('href') === '#variables' || 
+                        this.getAttribute('href') === '#printing' ||
+                        this.getAttribute('href') === '#input' ||
+                        this.getAttribute('href') === '#operations' ||
+                        this.getAttribute('href') === '#conditionals' ||
+                        this.getAttribute('href') === '#loops') {
+                        
+                        // Switch to documentation first
+                        document.querySelectorAll('.nav-link').forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('data-section') === 'documentation') {
+                                link.classList.add('active');
+                            }
+                        });
+                        
+                        document.querySelectorAll('.content-section').forEach(section => {
+                            section.classList.remove('active');
+                        });
+                        document.getElementById('documentation-section').classList.add('active');
+                        
+                        // Show sidebar
+                        document.querySelector('.sidebar').style.display = 'block';
+                    } else {
+                        return; // Don't apply smooth scrolling for other sections
+                    }
+                }
+                
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Toggle subsections
+        document.querySelectorAll('.section-title.has-subsections').forEach(title => {
+            title.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Toggle active class on the section title
+                this.classList.toggle('active');
+                
+                // Toggle show class on the subsections div
+                const subsections = this.nextElementSibling;
+                if (subsections && subsections.classList.contains('subsections')) {
+                    subsections.classList.toggle('show');
+                }
+                
+                // If we're showing the section, scroll to it
+                if (!e.target.classList.contains('subsection')) {
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Search functionality
+        const searchInput = document.querySelector('.search-input');
+        const searchResults = document.querySelector('.search-results');
+        
+        // Create a searchable index
+        const searchIndex = [
+            { title: "Variables and Data Types", section: "variables", content: "int float bool string arrays declaration" },
+            { title: "Printing Output", section: "printing", content: "yap output display console" },
+            { title: "Taking User Input", section: "input", content: "spill user input read" },
+            { title: "Arithmetic Operations", section: "arithmetic", content: "add subtract multiply divide exponentiation modulo" },
+            { title: "Comparison Operations", section: "comparison", content: "equal not equal greater than less than" },
+            { title: "Logical Operations", section: "logical", content: "and or not boolean logic" },
+            { title: "Bitwise Operations", section: "bitwise", content: "and or not binary bits" },
+            { title: "Conditional Statements", section: "conditionals", content: "if elif else decision" },
+            { title: "While Loop", section: "while", content: "while loop iterate repetition" },
+            { title: "For Loop", section: "for", content: "for loop iterate repetition" },
+            { title: "Break and Continue", section: "break", content: "break continue control flow" },
+            { title: "Arrays", section: "arrays", content: "arrays list collection elements index" },
+            { title: "Functions", section: "functions", content: "function def yeet return parameters arguments" },
+            { title: "Stacks", section: "stacks", content: "stack lifo last in first out" },
+            { title: "Queues", section: "queues", content: "queue fifo first in first out" }
+        ];
+        
+        searchInput.addEventListener('keyup', function() {
+            const query = this.value.toLowerCase().trim();
+            
+            if (query.length < 2) {
+                searchResults.classList.remove('show');
+                return;
+            }
+            
+            const results = searchIndex.filter(item => {
+                return (
+                    item.title.toLowerCase().includes(query) || 
+                    item.content.toLowerCase().includes(query)
+                );
+            });
+            
+            // Display results
+            searchResults.innerHTML = '';
+            
+            if (results.length > 0) {
+                results.forEach(result => {
+                    const resultItem = document.createElement('div');
+                    resultItem.classList.add('search-results-item');
+                    resultItem.innerHTML = `
+                        <strong>${result.title}</strong>
+                        <span>${result.content.substring(0, 50)}...</span>
+                    `;
+                    
+                    // When clicked, navigate to that section
+                    resultItem.addEventListener('click', function() {
+                        // Switch to documentation section
+                        document.querySelectorAll('.nav-link').forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('data-section') === 'documentation') {
+                                link.classList.add('active');
+                            }
+                        });
+                        
+                        document.querySelectorAll('.content-section').forEach(section => {
+                            section.classList.remove('active');
+                        });
+                        document.getElementById('documentation-section').classList.add('active');
+                        
+                        // Show sidebar
+                        document.querySelector('.sidebar').style.display = 'block';
+                        
+                        // Navigate to specific section
+                        const targetElement = document.getElementById(result.section);
+                        if (targetElement) {
+                            window.scrollTo({
+                                top: targetElement.offsetTop - 80,
+                                behavior: 'smooth'
+                            });
+                            
+                            // Highlight the section in sidebar
+                            navLinks.forEach(link => {
+                                link.classList.remove('active');
+                                if(link.getAttribute('href') === `#${result.section}`) {
+                                    link.classList.add('active');
+                                    
+                                    // If it's a subsection, show its parent
+                                    if (link.classList.contains('subsection')) {
+                                        const parent = link.closest('li').querySelector('.section-title');
+                                        parent.classList.add('active');
+                                        const subsections = link.closest('.subsections');
+                                        if (subsections) {
+                                            subsections.classList.add('show');
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                        
+                        // Clear search
+                        searchInput.value = '';
+                        searchResults.classList.remove('show');
+                    });
+                    
+                    searchResults.appendChild(resultItem);
+                });
+            } else {
+                searchResults.innerHTML = `
+                    <div class="search-results-empty">
+                        No results found for "${query}"
+                    </div>
+                `;
+            }
+            
+            searchResults.classList.add('show');
+        });
+        
+        // Close search results when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                searchResults.classList.remove('show');
+            }
+        });
+        
+        // Contact form submission
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for your message! We will get back to you soon.');
+            this.reset();
+        });
+
+        // Initialize - hide sidebar on home and about pages
+        if (!document.getElementById('documentation-section').classList.contains('active')) {
+            document.querySelector('.sidebar').style.display = 'none';
+            document.querySelector('main').classList.add('full-width');
+        }
+    </script>
+</body>
+</html>
