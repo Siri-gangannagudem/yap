@@ -83,7 +83,7 @@
                     <h2>Key Features</h2>
                     <ul>
                         <li><strong>Simple Syntax:</strong> YAP's syntax is designed to be readable and intuitive.</li>
-                        <li><strong>Static Typing:</strong> Variables are statically typed for better code safety.</li>
+                        
                         <li><strong>Boolean Values:</strong> Uses <code>nocap</code> (true) and <code>cap</code> (false) for boolean values.</li>
                         <li><strong>Function Returns:</strong> Uses the keyword <code>yeet</code> for returning values from functions.</li>
                         <li><strong>Built-in Data Structures:</strong> Support for arrays, stacks, and queues.</li>
@@ -471,29 +471,27 @@ yap(numbers);</code></pre>
                 </section>
                 
                 <section id="functions" class="section">
-                    <h2><span class="section-badge">8</span>Functions</h2>
-                    <p>A function is defined using <code>def</code>, and parameters are statically typed. The data type for return value is to be specified at the time of function definition, else the function is set to void by default. The keyword 'yeet' is used for returning functions. Functions can only return one value currently.</p>
-                    <div class="note">
-                        <p>Note: There are no ';' at the end of 'yeet' statements.</p>
-                        <p>Note: Functions cannot be parsed as parameters to other functions; However, function calls can be parsed.</p>
-                    </div>
-                    
-                    <h3>Function with Parameters</h3>
-                    <pre><code>def add(int a, int b) -> int {
+    <h2><span class="section-badge">8</span>Functions</h2>
+    <p>A function is defined using <code>def</code>, and parameters are statically typed. The data type for return value is to be specified at the time of function definition, else the function is set to void by default. The keyword 'yeet' is used for returning functions. Functions can only return one value currently.</p>
+    <p><strong>Note:</strong> There are no ';' at the end of 'yeet' statements.</p>
+    <p><strong>Note:</strong> Functions cannot be parsed as parameters to other functions; However, function calls can be parsed.</p>
+
+    <h3>Function with Parameters</h3>
+    <pre><code>def add(int a, int b) -> int {
     yeet a + b
 }
 yap(add(5, 3));</code></pre>
-                    <div class="output">8</div>
-                    
-                    <h3>Function without Return Value</h3>
-                    <pre><code>def greet(string name) {
+    <div class="output">8</div>
+
+    <h3>Function without Return Value</h3>
+    <pre><code>def greet(string name) {
     yap("Hello, ", name);
 }
 greet("Alice");</code></pre>
-                    <div class="output">Hello, Alice</div>
-                    
-                    <h3>Function with an Array as Input and Output</h3>
-                    <pre><code>def double_elements(int[] arr) -> int[] {
+    <div class="output">Hello, Alice</div>
+
+    <h3>Function with an Array as Input and Output</h3>
+    <pre><code>def double_elements(int[] arr) -> int[] {
     for (int i = 0; i < 4; i = i + 1) {
         arr[i] = arr[i] * 2;
     }
@@ -502,10 +500,10 @@ greet("Alice");</code></pre>
 int[] numbers = [1, 2, 3, 4];
 int[] result = double_elements(numbers);
 yap("Doubled Array:", result);</code></pre>
-                    <div class="output">Doubled Array:[2, 4, 6, 8]</div>
-                    
-                    <h3>Recursive Function</h3>
-                    <pre><code>def fib(int n) -> int{
+    <div class="output">Doubled Array:[2, 4, 6, 8]</div>
+
+    <h3>Recursive Function</h3>
+    <pre><code>def fib(int n) -> int{
     if((n==1) or (n==0) ){
         yeet n
     }
@@ -513,37 +511,59 @@ yap("Doubled Array:", result);</code></pre>
     yeet x
 }
 yap(fib(8));</code></pre>
-                    <div class="output">21</div>
-                    
-                    <h3>Functions as First-Class Values</h3>
-                    <pre><code>def add(int a, int b) -> int {
+    <div class="output">21</div>
+
+    <h3>Functions Calls</h3>
+    <pre><code>def add(int a, int b) -> int {
     yeet a + b
 }
 def multiply(int x, int y) -> int {
     yeet x * y
 }
 yap(multiply(add(2, 3), 4));</code></pre>
-                    <div class="output">20</div>
-                    
-                    <h3>Function and Scoping</h3>
-                    <pre><code>def changeVar(int x) -> int {
+    <div class="output">20</div>
+
+    <h3>Functions as First-Class Values</h3>
+    <pre><code>def double(int x) -> int {
+    yeet x * 2
+}
+
+fn f = double;
+yap(f(5));</code></pre>
+    <div class="output">10</div>
+
+    <pre><code>def return_fn() -> fn {
+    def say_hello() -> int {
+        yap("hi");
+        yeet 0
+    }
+
+    yeet say_hello
+}
+
+fn greeter = return_fn();
+greeter();</code></pre>
+    <div class="output">hi</div>
+
+    <h3>Function and Scoping</h3>
+    <pre><code>def changeVar(int x) -> int {
     x = x + 10;
     yeet x
 }
 int x = 5;
 yap(changeVar(x));  # Expected: 15
 yap(x);</code></pre>
-                    <div class="output">15
+    <div class="output">15
 5</div>
-                    
-                    <h4>Explanation: Scoping in YAP</h4>
-                    <p>In YAP, function parameters are passed by value. This means that when you call changeVar(x), the function gets a copy of x, not the original variable. Inside the function, the modification x = x + 10; affects only the copy, not the original x. After the function returns, x remains unchanged outside the function.</p>
-                    <p>To modify a variable globally, you would need to return the new value and explicitly reassign it:</p>
-                    <pre><code>int x = 5;
+
+    <h4>Explanation: Scoping in YAP</h4>
+    <p>In YAP, function parameters are passed by value. This means that when you call changeVar(x), the function gets a copy of x, not the original variable. Inside the function, the modification x = x + 10; affects only the copy, not the original x. After the function returns, x remains unchanged outside the function.</p>
+    <p>To modify a variable globally, you would need to return the new value and explicitly reassign it:</p>
+    <pre><code>int x = 5;
 x = changeVar(x);
 yap(x);</code></pre>
-                    <div class="output">15</div>
-                </section>
+    <div class="output">15</div>
+</section>
                 
                 <section id="collections" class="section">
                     <h2><span class="section-badge">9</span>Stacks and Queues</h2>
